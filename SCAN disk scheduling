@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int i, j, n, head, size, move, seek = 0, index;
+    int request[20], temp;
+
+    printf("Enter number of requests: ");
+    scanf("%d", &n);
+
+    printf("Enter request sequence: ");
+    for (i = 0; i < n; i++)
+        scanf("%d", &request[i]);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    printf("Enter total disk size: ");
+    scanf("%d", &size);
+
+    printf("Enter head movement direction (1=high, 0=low): ");
+    scanf("%d", &move);
+
+    
+    request[n++] = head;
+
+    
+    for (i = 0; i < n-1; i++) {
+        for (j = i+1; j < n; j++) {
+            if (request[i] > request[j]) {
+                temp = request[i];
+                request[i] = request[j];
+                request[j] = temp;
+            }
+        }
+    }
+
+    // find index of head
+    for (i = 0; i < n; i++)
+        if (request[i] == head) { index = i; break; }
+
+    printf("\nOrder of service: %d ", head);
+
+    if (move == 1) {  
+        for (i = index+1; i < n; i++) {
+            seek += abs(request[i] - head);
+            head = request[i];
+            printf("-> %d ", head);
+        }
+        seek += (size-1) - head;
+        head = size-1;
+        printf("-> %d ", head);
+        for (i = index-1; i >= 0; i--) {
+            seek += abs(request[i] - head);
+            head = request[i];
+            printf("-> %d ", head);
+        }
+    } else {  
+        for (i = index-1; i >= 0; i--) {
+            seek += abs(request[i] - head);
+            head = request[i];
+            printf("-> %d ", head);
+        }
+        
+        seek += head;
+        head = 0;
+        printf("-> %d ", head);
+        for (i = index+1; i < n; i++) {
+            seek += abs(request[i] - head);
+            head = request[i];
+            printf("-> %d ", head);
+        }
+    }
+
+    printf("\nTotal head movement = %d\n", seek);
+    return 0;
+}
+
+input
+
+Enter number of requests: 5
+Enter request sequence: 82 170 43 140 24
+Enter initial head position: 50
+Enter total disk size: 200
+Enter head movement direction (1=high, 0=low): 1
+
+output
+
+Order of service: 50 -> 82 -> 140 -> 170 -> 199 -> 43 -> 24
+Total head movement = 389
