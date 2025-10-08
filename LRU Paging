@@ -1,0 +1,80 @@
+#include <stdio.h>
+
+int main() {
+    int pages[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5};
+    int n = 12;   
+    int f = 3;   
+    int frame[3], used[3]; 
+    int i, j, k, faults = 0, flag, least;
+
+    for (i = 0; i < f; i++) {
+        frame[i] = -1;
+        used[i] = -1;
+    }
+
+    printf("Page\tFrames\t\tPage Fault\n");
+
+    for (i = 0; i < n; i++) {
+        flag = 0;
+
+        // check if page is already in frame
+        for (j = 0; j < f; j++) {
+            if (frame[j] == pages[i]) {
+                flag = 1;  
+                used[j] = i; // update last used
+                break;
+            }
+        }
+
+        if (flag == 0) { // page fault
+            // find least recently used
+            least = 0;
+            for (j = 1; j < f; j++) {
+                if (used[j] < used[least]) least = j;
+            }
+
+            frame[least] = pages[i];
+            used[least] = i;
+            faults++;
+
+            printf("%d\t", pages[i]);
+            for (k = 0; k < f; k++) {
+                if (frame[k] != -1)
+                    printf("%d ", frame[k]);
+                else
+                    printf("- ");
+            }
+            printf("\tYes\n");
+        } else {
+            printf("%d\t", pages[i]);
+            for (k = 0; k < f; k++) {
+                if (frame[k] != -1)
+                    printf("%d ", frame[k]);
+                else
+                    printf("- ");
+            }
+            printf("\tNo\n");
+        }
+    }
+
+    printf("\nTotal Page Faults = %d\n", faults);
+    return 0;
+}
+
+output
+
+Page    Frames          Page Fault
+1       1 - -           Yes
+2       1 2 -           Yes
+3       1 2 3           Yes
+4       4 2 3           Yes
+1       4 1 3           Yes
+2       4 1 2           Yes
+5       5 1 2           Yes
+1       5 1 2           No
+2       5 1 2           No
+3       3 1 2           Yes
+4       4 1 2           Yes
+5       5 1 2           Yes
+
+Total Page Faults = 10
