@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, i, head, seek = 0;
+    int request[20];
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    printf("Enter request sequence: ");
+    for (i = 0; i < n; i++)
+        scanf("%d", &request[i]);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    printf("\nOrder of service: %d ", head);
+    for (i = 0; i < n; i++) {
+        seek += abs(request[i] - head); 
+        head = request[i];
+        printf("-> %d ", head);
+    }
+
+    printf("\nTotal head movement = %d\n", seek);
+    printf("Average head movement = %.2f\n", (float)seek/n);
+
+    return 0;
+}
+
+input
+
+Enter number of disk requests: 7
+Enter request sequence: 82 170 43 140 24 16 190
+Enter initial head position: 50
+
+output
+
+Order of service: 50 -> 82 -> 170 -> 43 -> 140 -> 24 -> 16 -> 190
+Total head movement = 642
+Average head movement = 91.71
