@@ -1,0 +1,70 @@
+#include <stdio.h>
+
+int main() {
+    int pages[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5};
+    int n = 12;          
+    int f = 3;           
+    int frame[3];
+    int i, j, k = 0, faults = 0, flag;
+
+    for (i = 0; i < f; i++)
+        frame[i] = -1;
+
+    printf("Page\tFrames\t\tPage Fault\n");
+
+    for (i = 0; i < n; i++) {
+        flag = 0;
+
+        // check if page is already present
+        for (j = 0; j < f; j++) {
+            if (frame[j] == pages[i]) {
+                flag = 1; // hit
+                break;
+            }
+        }
+
+        if (flag == 0) { // page fault
+            frame[k] = pages[i];
+            k = (k + 1) % f;
+            faults++;
+
+            printf("%d\t", pages[i]);
+            for (j = 0; j < f; j++) {
+                if (frame[j] != -1)
+                    printf("%d ", frame[j]);
+                else
+                    printf("- ");
+            }
+            printf("\tYes\n");
+        } else {
+            printf("%d\t", pages[i]);
+            for (j = 0; j < f; j++) {
+                if (frame[j] != -1)
+                    printf("%d ", frame[j]);
+                else
+                    printf("- ");
+            }
+            printf("\tNo\n");
+        }
+    }
+
+    printf("\nTotal Page Faults = %d\n", faults);
+    return 0;
+}
+
+output
+Page    Frames          Page Fault
+1       1 - -           Yes
+2       1 2 -           Yes
+3       1 2 3           Yes
+4       4 2 3           Yes
+1       4 1 3           Yes
+2       4 1 2           Yes
+5       5 1 2           Yes
+1       5 1 2           No
+2       5 1 2           No
+3       3 1 2           Yes
+4       3 4 2           Yes
+5       3 4 5           Yes
+
+Total Page Faults = 9
